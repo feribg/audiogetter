@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Generic-->
+    <string name="app_name">AudioGetter</string>
+    <string name="http_user_agent">Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36</string>
+    <string name="generic_exception">Something went horribly wrooong :/</string>
+    <string name="manager_service_name">Audiogetter manager service</string>
+    <!--End generic-->
+
+    <!--Menus-->
+    <string name="action_settings">Settings</string>
+    <string name="action_convert">Convert</string>
+    <string name="action_search">Search</string>
+    <!--End menus-->
+
+    <!--Generic strings-->
+    <string name="confirm_ok">OK</string>
+    <string name="confirm_cancel">Cancel</string>
+    <!--End generic strings-->
+
+    <!--Main activity-->
+    <string name="activity_main_title">Audiogetter</string>
+    <!--End Main activity-->
+
+    <!--Search activity-->
+    <string name="search_label">Search</string>
+    <string name="search_results_text">Results</string>
+    <string name="search_hint">Enter artist or song title</string>
+    <string name="search_voice_prompt">Speak an artist or song title</string>
+    <string name="error_loading_results">Error while loading the search results</string>
+    <string name="error_no_results">We didn\'t find any results for that query. Please try another one.</string>
+    <plurals name="search_results_text_number">
+        <item quantity="zero">No results found</item>
+        <item quantity="one">One result found</item>
+        <item quantity="other">Around %d results found</item>
+    </plurals>
+    <string name="error_loading_details">Unable to get download details. Please try another result.</string>
+    <string name="search_download_confirm_message">Are you sure you want to download the song "%1$s"?</string>
+    <string name="page_title_soundcloud">SoundCloud</string>
+    <string name="page_title_youtube">YouTube</string>
+    <string name="page_title_muzu">Muzu</string>
+    <string name="page_title_vimeo">Vimeo</string>
+
+    <!--Add activity-->
+    <string name="activity_add_title">Get audio</string>
+    <string name="button_add">Download</string>
+    <string name="error_wait">Please wait for this download to begin before adding another one!</string>
+    <string name="confirmation_text">Are you sure you want to download the file "%1$s", which is %2$d minutes long?</string>
+    <string name="confirmation_text_long">Are you sure you want to download the file "%1$s", which is %2$d minutes long? This file is longer than the advised 15min length and it might fail.</string>
+    <string name="long_download_title">Confirm action</string>
+    <string name="source_url_hint">Source url</string>
+    <!--End Add activity-->
+
+    <!--Toast messages-->
+    <string name="toast_too_many_concurrent">You have too many downloads currently running. Please cancel or wait some of them to complete.</string>
+    <string name="search_view_placeholder">Type in artist or song</string>
+    <!--End Toast messages-->
+
+</resources>

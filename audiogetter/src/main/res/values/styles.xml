@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!--Splash screen styles-->
+    <style name="splash_loading_text_style">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/splash_loading_text_size</item>
+        <item name="android:textColor">#D8E3EB</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_marginTop">88dp</item>
+    </style>
+
+
+    <!--Search footer progressbar-->
+    <style name="search_footer_progressbar" parent="android:Widget.ProgressBar">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+</resources>

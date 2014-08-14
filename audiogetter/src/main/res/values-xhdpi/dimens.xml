@@ -1,0 +1,4 @@
+<resources>
+    <!--Splash screens style-->
+    <dimen name="splash_loading_text_size">64dp</dimen>
+</resources>
