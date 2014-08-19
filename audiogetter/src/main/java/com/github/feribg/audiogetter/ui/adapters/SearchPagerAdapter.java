@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 
 import com.github.feribg.audiogetter.ui.fragments.SoundcloudSearchResultsFragment;
 import com.github.feribg.audiogetter.ui.fragments.VimeoSearchResultsFragment;
+import com.github.feribg.audiogetter.ui.fragments.YoutubeSearchResultsFragment;
 
 public class SearchPagerAdapter extends FragmentPagerAdapter {
 
     public static final int PAGE_SOUNDCLOUD = 0;
-    public static final int PAGE_VIMEO = 1;
+    public static final int PAGE_YOUTUBE = 1;
+    public static final int PAGE_VIMEO = 2;
 
     public static final String ARG_SEARCH_TERM = "search_term";
     private String searchTerm;
@@ -31,6 +33,9 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
             switch (i) {
                 case PAGE_SOUNDCLOUD:
                     fragment = new SoundcloudSearchResultsFragment();
+                    break;
+                case PAGE_YOUTUBE:
+                    fragment = new YoutubeSearchResultsFragment();
                     break;
                 case PAGE_VIMEO:
                     fragment = new VimeoSearchResultsFragment();
@@ -58,7 +63,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -67,6 +72,9 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case PAGE_SOUNDCLOUD:
                 title = "SoundCloud";
+                break;
+            case PAGE_YOUTUBE:
+                title = "YouTube";
                 break;
             case PAGE_VIMEO:
                 title = "Vimeo";

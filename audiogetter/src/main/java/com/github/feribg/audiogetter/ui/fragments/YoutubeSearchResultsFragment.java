@@ -32,17 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fetches and displays Vimeo search results via the Vimeo HTTP API
+ * Fetches and displays Youtube search results via the Youtube HTTP API
  *
- * @see <a href="https://developer.vimeo.com/api/endpoints/videos#">VIMEO HTTP API (video section)</a>
+ * @see <a href="https://developers.google.com/youtube/v3/docs/search/list">Youtube v3 api (search section)</a>
  */
-public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
+public class YoutubeSearchResultsFragment extends SearchResultsBaseFragment {
 
+    //keep track of the next page to load
+    String nextPage;
 
-    //keep track of the current page
-    Integer page = 1;
-    //if it has more pages to load
-    Boolean hasMore = true;
     Future<JsonObject> searchResultsFuture;
 
     @Override
@@ -64,8 +62,7 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
         Log.d(App.TAG, "SAVING:" + searchTerm);
         savedState.putParcelableArrayList("results", results);
         savedState.putString("searchTerm", searchTerm);
-        savedState.putInt("page", page);
-        savedState.putBoolean("hasMore", hasMore);
+        savedState.putString("nextPage", nextPage);
     }
 
     /**
@@ -74,8 +71,7 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
     @Override
     protected void cleanup() {
         super.cleanup();
-        hasMore = true;
-        page = 1;
+        nextPage = null;
     }
 
     /**
@@ -88,17 +84,16 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
             if (searchResultsFuture != null && !searchResultsFuture.isDone() && !searchResultsFuture.isCancelled())
                 return;
             // we have loaded the max number of results, dont load more
-            if (!hasMore) {
+            if (nextPage == null || nextPage.equals("") || searchResultsAdapter.getCount() >= Constants.Youtube.MAX_RESULTS) {
                 if (searchFooterView != null) {
                     getListView().removeFooterView(searchFooterView);
                 }
                 return;
             }
 
-            URI uri = Utils.getVimeoSearchURI(searchTerm, page);
+            URI uri = Utils.getYoutubeSearchURI(searchTerm, nextPage);
             searchResultsFuture = Ion.with(this)
                     .load(uri.toString())
-                    .setHeader("Authorization", "bearer " + Constants.Vimeo.API_TOKEN)
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
@@ -110,22 +105,21 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
                                 if (json == null) {
                                     throw new Exception("Server returned a null response");
                                 }
-                                if (json.get("total").getAsInt() == 0) {
+                                if (json.get("pageInfo").getAsJsonObject().get("totalResults").getAsInt() == 0) {
                                     Toast.makeText(getActivity(), R.string.error_no_results, Toast.LENGTH_LONG).show();
                                     return;
                                 }
-                                JsonArray videos = json.get("data").getAsJsonArray();
+                                JsonArray videos = json.get("items").getAsJsonArray();
                                 for (JsonElement object : videos) {
-                                    SearchItem item = sourceController.extractVimeoSearchItem(object.getAsJsonObject());
+                                    SearchItem item = sourceController.extractYoutubeSearchItem(object.getAsJsonObject());
                                     if (item != null) {
                                         searchResultsAdapter.add(item);
                                     }
                                 }
-                                if (json.get("paging").getAsJsonObject().get("next").isJsonNull()) {
-                                    hasMore = false;
-                                } else {
-                                    hasMore = true;
-                                    page++;
+                                if(!json.get("nextPageToken").isJsonNull()){
+                                    nextPage = json.get("nextPageToken").getAsString();
+                                }else{
+                                    nextPage = null;
                                 }
                             } catch (Exception ex) {
                                 Toast.makeText(getActivity(), R.string.error_loading_results, Toast.LENGTH_LONG).show();
@@ -149,11 +143,8 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
     protected void loadState(Bundle savedInstanceState) {
         super.loadState(savedInstanceState);
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("hasMore")) {
-                hasMore = savedInstanceState.getBoolean("hasMore");
-            }
-            if (savedInstanceState.containsKey("page")) {
-                page = savedInstanceState.getInt("page");
+            if (savedInstanceState.containsKey("nextPage")) {
+                nextPage = savedInstanceState.getString("nextPage");
             }
         }
     }

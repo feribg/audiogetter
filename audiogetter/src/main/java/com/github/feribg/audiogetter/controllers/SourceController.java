@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.github.feribg.audiogetter.config.App;
+import com.github.feribg.audiogetter.config.Constants;
 import com.github.feribg.audiogetter.exceptions.InvalidSourceException;
 import com.github.feribg.audiogetter.helpers.Utils;
 import com.github.feribg.audiogetter.models.Download;
@@ -171,6 +172,24 @@ public class SourceController {
         searchItem.setTitle(songObject.get("name").getAsString().trim());
         searchItem.setExtractor(SourceController.EXTRACTOR_VIMEO); //only support youtube MP4s
         searchItem.setUrl(songObject.get("link").getAsString());
+        return searchItem;
+    }
+
+    public SearchItem extractYoutubeSearchItem(JsonObject songObject){
+        if(songObject == null || songObject.isJsonNull()){
+           return  null;
+        }
+        JsonObject id = songObject.get("id").getAsJsonObject();
+        if(!id.get("kind").getAsString().equals(Constants.Youtube.KIND_VIDEO)){
+            return null;
+        }
+        JsonObject snippet = songObject.get("snippet").getAsJsonObject();
+        SearchItem searchItem = new SearchItem();
+        searchItem.setFormat("mp4");
+        searchItem.setSongId(id.get("videoId").getAsString());
+        searchItem.setTitle(snippet.get("title").getAsString());
+        searchItem.setExtractor(SourceController.EXTRACTOR_YOUTUBE);
+        searchItem.setUrl(String.format(Constants.Youtube.VIDEO_URL, searchItem.getSongId()));
         return searchItem;
     }
 }

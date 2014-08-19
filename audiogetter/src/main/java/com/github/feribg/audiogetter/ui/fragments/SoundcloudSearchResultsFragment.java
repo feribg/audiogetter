@@ -38,8 +38,6 @@ import java.util.List;
  */
 public class SoundcloudSearchResultsFragment extends SearchResultsBaseFragment {
 
-    //default limit of result items per page
-    final Integer limit = 50;
     //max offset of 1000, no more than 1000 results needed
     Integer offset = 0;
     Future<JsonArray> searchResultsFuture;
@@ -92,7 +90,7 @@ public class SoundcloudSearchResultsFragment extends SearchResultsBaseFragment {
                 return;
             }
 
-            URI uri = Utils.getSoundCloudSearchURI(searchTerm, offset, limit);
+            URI uri = Utils.getSoundCloudSearchURI(searchTerm, offset);
             searchResultsFuture = Ion.with(this)
                     .load(uri.toString())
                     .asJsonArray()
@@ -116,7 +114,7 @@ public class SoundcloudSearchResultsFragment extends SearchResultsBaseFragment {
                                         searchResultsAdapter.add(item);
                                     }
                                 }
-                                offset += limit;
+                                offset += Constants.Soundcloud.PER_PAGE;
                             } catch (Exception ex) {
                                 Toast.makeText(getActivity(), R.string.error_loading_results, Toast.LENGTH_LONG).show();
                                 Log.e(App.TAG, "Error while trying to get search results", ex);

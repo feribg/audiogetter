@@ -253,21 +253,56 @@ public class Utils {
         return URIUtils.createURI(scheme, Constants.Backend.API_HOST, -1, path, URLEncodedUtils.format(qparams, "UTF-8"), null);
     }
 
-
-    public static URI getSoundCloudSearchURI(String query, Integer offset, Integer limit) throws URISyntaxException {
+    /**
+     * Prepare soundcloud search URL
+     * @param query
+     * @param offset
+     * @return
+     * @throws URISyntaxException
+     */
+    public static URI getSoundCloudSearchURI(String query, Integer offset) throws URISyntaxException {
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
         qparams.add(new BasicNameValuePair("client_id", Constants.Soundcloud.CLIENT_ID));
         qparams.add(new BasicNameValuePair("offset", String.valueOf(offset)));
-        qparams.add(new BasicNameValuePair("limit", String.valueOf(limit)));
+        qparams.add(new BasicNameValuePair("limit", String.valueOf(Constants.Soundcloud.PER_PAGE)));
         qparams.add(new BasicNameValuePair("q", query));
         return URIUtils.createURI(Constants.Soundcloud.API_SCHEME, Constants.Soundcloud.API_HOST, -1, Constants.Soundcloud.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
     }
 
-    public static URI getVimeoSearchURI(String query, Integer limit, Integer page) throws URISyntaxException {
+    /**
+     * Prepare Vimeo search URL
+     * @param query
+     * @param page
+     * @return
+     * @throws URISyntaxException
+     */
+    public static URI getVimeoSearchURI(String query, Integer page) throws URISyntaxException {
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
         qparams.add(new BasicNameValuePair("query", query));
         qparams.add(new BasicNameValuePair("page", String.valueOf(page)));
-        qparams.add(new BasicNameValuePair("per_page", String.valueOf(limit)));
+        qparams.add(new BasicNameValuePair("per_page", String.valueOf(Constants.Vimeo.PER_PAGE)));
+        return URIUtils.createURI(Constants.Vimeo.API_SCHEME, Constants.Vimeo.API_HOST, -1, Constants.Vimeo.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
+    }
+
+    /**
+     * Prepare a valid Youtube API request URI
+     * @param query
+     * @param pageToken
+     * @return
+     * @throws URISyntaxException
+     */
+    public static URI getYoutubeSearchURI(String query, String pageToken) throws URISyntaxException{
+        List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+        qparams.add(new BasicNameValuePair("q", query));
+        //if there is a specific page to load
+        if(pageToken != null && pageToken.length() > 0){
+            qparams.add(new BasicNameValuePair("pageToken", pageToken));
+        }
+        qparams.add(new BasicNameValuePair("part", "snippet,id"));
+        qparams.add(new BasicNameValuePair("maxResults", String.valueOf(Constants.Youtube.PER_PAGE)));
+        qparams.add(new BasicNameValuePair("safeSearch", Constants.Youtube.SAFE_SEARCH));
+        qparams.add(new BasicNameValuePair("type", Constants.Youtube.TYPE));
+        qparams.add(new BasicNameValuePair("key", Constants.Youtube.API_TOKEN));
         return URIUtils.createURI(Constants.Vimeo.API_SCHEME, Constants.Vimeo.API_HOST, -1, Constants.Vimeo.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
     }
 
