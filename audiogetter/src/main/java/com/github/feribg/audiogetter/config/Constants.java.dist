@@ -3,24 +3,42 @@ package com.github.feribg.audiogetter.config;
 
 public final class Constants {
     public static final class Soundcloud {
-        public static final String CLIENT_ID = "<YOUR_CLIENT_ID>";
+        public static final String CLIENT_ID = "";
         public static final Integer MAX_RESULTS = 1000;
         public static final String API_HOST = "api.soundcloud.com";
         public static final String API_SEARCH = "tracks.json";
         public static final String API_SCHEME = "http";
+        public static final Integer PER_PAGE = 50; //max is 50 as per the API limits
 
     }
 
     public static final class Vimeo {
         public static final String API_HOST = "api.vimeo.com";
         public static final String API_SEARCH = "videos";
-        public static final String API_TOKEN = "<YOUR_API_TOKEN>";
+        public static final String API_TOKEN = "";
         public static final String API_SCHEME = "https";
+        public static final Integer PER_PAGE = 50; //max is 50 as per the API limits
 
     }
 
     public static final class Backend {
-        public static final String API_HOST = "<YOUR_API_HOST>";
+        public static final String API_HOST = "youtube-dl-api.appspot.com";
         public static final String API_SCHEME = "http";
+    }
+
+    /**
+     * @see <a href="https://developers.google.com/youtube/v3/docs/search/list">Youtube v3 api (search section)</a>
+     */
+    public static final class Youtube{
+        public static final String API_HOST = "www.googleapis.com";
+        public static final String API_SCHEME = "https";
+        public static final Integer MAX_RESULTS = 1000; //limit total number of results
+        public static final String SAFE_SEARCH = "none";
+        public static final String TYPE = "video";
+        public static final String KIND_VIDEO = "youtube#video";
+        public static final String VIDEO_URL = "https://www.youtube.com/watch?v=%s";
+        public static final Integer PER_PAGE = 50; //max is 50 as per the API limits
+        public static final String API_SEARCH = "youtube/v3/search";
+        public static final String API_TOKEN = "";
     }
 }
