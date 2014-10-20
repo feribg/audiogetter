@@ -303,7 +303,7 @@ public class Utils {
         qparams.add(new BasicNameValuePair("safeSearch", Constants.Youtube.SAFE_SEARCH));
         qparams.add(new BasicNameValuePair("type", Constants.Youtube.TYPE));
         qparams.add(new BasicNameValuePair("key", Constants.Youtube.API_TOKEN));
-        return URIUtils.createURI(Constants.Vimeo.API_SCHEME, Constants.Vimeo.API_HOST, -1, Constants.Vimeo.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
+        return URIUtils.createURI(Constants.Youtube.API_SCHEME, Constants.Youtube.API_HOST, -1, Constants.Youtube.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
     }
 
     /**

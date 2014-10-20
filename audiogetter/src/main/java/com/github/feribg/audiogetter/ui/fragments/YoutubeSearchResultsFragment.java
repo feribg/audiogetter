@@ -84,7 +84,7 @@ public class YoutubeSearchResultsFragment extends SearchResultsBaseFragment {
             if (searchResultsFuture != null && !searchResultsFuture.isDone() && !searchResultsFuture.isCancelled())
                 return;
             // we have loaded the max number of results, dont load more
-            if (nextPage == null || nextPage.equals("") || searchResultsAdapter.getCount() >= Constants.Youtube.MAX_RESULTS) {
+            if (nextPage != null && (nextPage.equals("") || searchResultsAdapter.getCount() >= Constants.Youtube.MAX_RESULTS)) {
                 if (searchFooterView != null) {
                     getListView().removeFooterView(searchFooterView);
                 }
@@ -156,6 +156,7 @@ public class YoutubeSearchResultsFragment extends SearchResultsBaseFragment {
      */
     @Override
     protected void showConfirmation(final Download download) {
+        Log.d(App.TAG, "Dl: "+download.getUrl());
         String msgText = String.format(getResources().getString(R.string.search_download_confirm_message), download.getTitle());
 
         //Ask the user if they want to quit
