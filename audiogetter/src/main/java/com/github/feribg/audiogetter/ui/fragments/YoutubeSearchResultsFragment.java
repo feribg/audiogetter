@@ -59,9 +59,6 @@ public class YoutubeSearchResultsFragment extends SearchResultsBaseFragment {
     @Override
     public void onSaveInstanceState(Bundle savedState) {
         super.onSaveInstanceState(savedState);
-        Log.d(App.TAG, "SAVING:" + searchTerm);
-        savedState.putParcelableArrayList("results", results);
-        savedState.putString("searchTerm", searchTerm);
         savedState.putString("nextPage", nextPage);
     }
 

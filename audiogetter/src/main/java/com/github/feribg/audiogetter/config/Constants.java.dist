@@ -2,6 +2,11 @@ package com.github.feribg.audiogetter.config;
 
 
 public final class Constants {
+
+    /**
+     * Soundcloud API settings
+     * @see <a href="https://developers.soundcloud.com/docs">Soundcloud API docs</a>
+     */
     public static final class Soundcloud {
         public static final String CLIENT_ID = "";
         public static final Integer MAX_RESULTS = 1000;
@@ -12,6 +17,10 @@ public final class Constants {
 
     }
 
+    /**
+     * Vimeo API settings
+     * @see <a href="http://developer.vimeo.com/api/start">Vimeo API docs</a>
+     */
     public static final class Vimeo {
         public static final String API_HOST = "api.vimeo.com";
         public static final String API_SEARCH = "videos";
@@ -21,12 +30,16 @@ public final class Constants {
 
     }
 
+    /**
+     * Backend API settings for video extractions
+     */
     public static final class Backend {
         public static final String API_HOST = "youtube-dl-api.appspot.com";
         public static final String API_SCHEME = "http";
     }
 
     /**
+     * Youtube API settings
      * @see <a href="https://developers.google.com/youtube/v3/docs/search/list">Youtube v3 api (search section)</a>
      */
     public static final class Youtube{
@@ -40,5 +53,14 @@ public final class Constants {
         public static final Integer PER_PAGE = 50; //max is 50 as per the API limits
         public static final String API_SEARCH = "youtube/v3/search";
         public static final String API_TOKEN = "";
+    }
+
+    /**
+     * Mp3Skull specific settings
+     */
+    public static final class Mp3skull{
+        public static final String API_HOST = "http://mp3skull.com/";
+        public static final String API_SCHEME = "https";
+        public static final String API_SEARCH = "search_db.php";
     }
 }

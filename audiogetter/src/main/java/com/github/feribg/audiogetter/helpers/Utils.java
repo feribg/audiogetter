@@ -270,6 +270,30 @@ public class Utils {
     }
 
     /**
+     * Used to build an mp3 skull search query. An initial request might be needed to fetch the
+     * CSRF token from the page source before searching
+     * @param query
+     * @param csrf
+     * @return
+     * @throws URISyntaxException
+     */
+    public static URI getMp3SkullSearchURI(String query, String csrf) throws URISyntaxException{
+        List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+        qparams.add(new BasicNameValuePair("fckh", csrf));
+        qparams.add(new BasicNameValuePair("q", query));
+        return URIUtils.createURI(Constants.Mp3skull.API_SCHEME, Constants.Mp3skull.API_HOST, -1, Constants.Mp3skull.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
+    }
+
+    /**
+     * Get the base Mp3Skull url to determine CSRF token for the session
+     * @return
+     * @throws URISyntaxException
+     */
+    public static URI getMp3SkullBaseURI() throws URISyntaxException{
+        return URIUtils.createURI(Constants.Mp3skull.API_SCHEME, Constants.Mp3skull.API_HOST, -1, Constants.Mp3skull.API_SEARCH, null, null);
+    }
+
+    /**
      * Prepare Vimeo search URL
      * @param query
      * @param page

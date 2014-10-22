@@ -61,9 +61,6 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
     @Override
     public void onSaveInstanceState(Bundle savedState) {
         super.onSaveInstanceState(savedState);
-        Log.d(App.TAG, "SAVING:" + searchTerm);
-        savedState.putParcelableArrayList("results", results);
-        savedState.putString("searchTerm", searchTerm);
         savedState.putInt("page", page);
         savedState.putBoolean("hasMore", hasMore);
     }

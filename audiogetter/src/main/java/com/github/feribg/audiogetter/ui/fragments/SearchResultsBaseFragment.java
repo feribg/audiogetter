@@ -97,6 +97,14 @@ public abstract class SearchResultsBaseFragment extends RoboListFragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        Log.d(App.TAG, "SAVING:" + searchTerm);
+        savedState.putParcelableArrayList("results", results);
+        savedState.putString("searchTerm", searchTerm);
+    }
+
     /**
      * Load saved fragment state
      *
