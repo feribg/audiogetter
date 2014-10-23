@@ -25,6 +25,7 @@ public class SearchItem implements Parcelable {
     private String format;
     private String genre;
     private String extractor;
+    private String meta;
     private String url;
 
     public SearchItem() {
@@ -44,6 +45,14 @@ public class SearchItem implements Parcelable {
         this.format = dest.readString();
         this.genre = dest.readString();
         this.url = dest.readString();
+    }
+
+    public String getMeta() {
+        return meta;
+    }
+
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 
     public String getFormat() {

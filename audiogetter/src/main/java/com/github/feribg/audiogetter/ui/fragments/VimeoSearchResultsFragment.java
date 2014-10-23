@@ -107,7 +107,7 @@ public class VimeoSearchResultsFragment extends SearchResultsBaseFragment {
                                 if (json == null) {
                                     throw new Exception("Server returned a null response");
                                 }
-                                if (json.get("total").getAsInt() == 0) {
+                                if (json.get("total") == null || json.get("total").getAsInt() == 0) {
                                     Toast.makeText(getActivity(), R.string.error_no_results, Toast.LENGTH_LONG).show();
                                     return;
                                 }

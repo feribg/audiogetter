@@ -14,9 +14,12 @@ import com.github.feribg.audiogetter.models.SearchItem;
 import com.github.feribg.audiogetter.models.Services;
 import com.google.gson.JsonObject;
 
+import org.jsoup.nodes.Element;
+
 import java.io.File;
 
 import javax.inject.Singleton;
+import javax.xml.transform.Source;
 
 @Singleton
 public class SourceController {
@@ -52,7 +55,12 @@ public class SourceController {
 
     }
 
-
+    /**
+     * Map a downloader API response from youtube-dl Json to a Download object which can be scheduled for fetching by the DL service
+     * @param jsonObject
+     * @return
+     * @throws Exception
+     */
     public Download extractData(JsonObject jsonObject) throws Exception {
         Download download = new Download();
         download.setUrl(jsonObject.get("url").getAsString());
@@ -89,13 +97,22 @@ public class SourceController {
         return download;
     }
 
-
+    /**
+     * Map a SearchItem result into a Download object which can be scheduled for fetching by the download manager
+     * @param searchItem
+     * @return
+     * @throws Exception
+     */
     public Download extractFromSearchItem(SearchItem searchItem) throws Exception {
         Download download = new Download();
         download.setType(searchItem.getFormat()); //only support youtube MP3s
         download.setExt(searchItem.getFormat()); //only support youtube MP3s
         download.setSourceId(searchItem.getSongId());
-        download.setTitle(String.format("%s - %s", searchItem.getArtistName(), searchItem.getTitle()));
+        if(searchItem.getArtistName() != null){
+            download.setTitle(String.format("%s - %s", searchItem.getArtistName(), searchItem.getTitle()));
+        }else{
+            download.setTitle(searchItem.getTitle());
+        }
         download.setDownloadUrl(searchItem.getSongLocation());
         download.setUrl(searchItem.getUrl());
         download.setFolder(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/samples"));
@@ -111,26 +128,31 @@ public class SourceController {
         return download;
     }
 
-    public SearchItem extractXiamiSearchItemData(JsonObject songObject) {
-        if (songObject == null) {
+    /**
+     * Extract a SearchItem result from a song html row from mp3skull.com
+     * @param songElement
+     * @return
+     */
+    public SearchItem extractMp3skullSearchItem(Element songElement){
+        if(songElement == null){
             return null;
         }
         SearchItem searchItem = new SearchItem();
-        if (songObject.get("album_name") != null) {
-            searchItem.setAlbumName(Html.fromHtml(songObject.get("album_name").getAsString()).toString());
-        }
-        searchItem.setFormat("mp3"); //only support MP3s for xiami
-        searchItem.setSongLogo(songObject.get("album_logo").getAsString());
-        searchItem.setArtistName(Html.fromHtml(songObject.get("artist_name").getAsString()).toString());
-        searchItem.setTitle(Html.fromHtml(songObject.get("name").getAsString()).toString());
-        searchItem.setSongLocation(songObject.get("location").getAsString());
-        searchItem.setAlbumId(songObject.get("album_id").getAsString());
-        searchItem.setArtistId(songObject.get("artist_id").getAsString());
-        searchItem.setSongId(songObject.get("song_id").getAsString());
+        searchItem.setMeta(songElement.getElementsByClass("left").first().text());
+        searchItem.setTitle(songElement.getElementById("right_song").getElementsByTag("div").first().text());
+        searchItem.setFormat("mp3");
         searchItem.setExtractor(SourceController.EXTRACTOR_RAW);
+        String url = songElement.getElementById("right_song").getElementsByAttributeValue("rel", "nofollow").first().attr("href");
+        searchItem.setUrl(url);
+        searchItem.setSongLocation(url);
         return searchItem;
     }
 
+    /**
+     * Map a soundcloud Json song entry to a generic SearchItem entry
+     * @param songObject
+     * @return
+     */
     public SearchItem extractSoundcloudSearchItem(JsonObject songObject) {
         if (songObject == null) {
             return null;
@@ -153,11 +175,16 @@ public class SourceController {
         if (songObject.get("label_name") != null && !songObject.get("label_name").isJsonNull()) {
             searchItem.setAlbumName(songObject.get("label_name").getAsString());
         }
-        searchItem.setExtractor(SourceController.EXTRACTOR_SOUNDCLOUD); //only support youtube MP4s
+        searchItem.setExtractor(SourceController.EXTRACTOR_SOUNDCLOUD);
         searchItem.setUrl(songObject.get("permalink_url").getAsString());
         return searchItem;
     }
 
+    /**
+     * Map a Vimeo song entry to a generic SearchItem entry
+     * @param songObject
+     * @return
+     */
     public SearchItem extractVimeoSearchItem(JsonObject songObject) {
         if (songObject == null) {
             return null;
@@ -175,6 +202,11 @@ public class SourceController {
         return searchItem;
     }
 
+    /**
+     * Map a Youtube API entry to a generic SearchItem object
+     * @param songObject
+     * @return
+     */
     public SearchItem extractYoutubeSearchItem(JsonObject songObject){
         if(songObject == null || songObject.isJsonNull()){
            return  null;

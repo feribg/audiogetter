@@ -16,6 +16,8 @@ import com.koushikdutta.ion.ProgressCallback;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.greenrobot.event.EventBus;
@@ -72,8 +74,13 @@ public class RawAudioTask extends BaseTask {
                 throw new InterruptedException();
             }
 
-            file.get();
+            File res = file.get();
 
+            //prevent unknown file formats to be kept on the device
+            String mime = URLConnection.guessContentTypeFromName(res.getName());
+            if(!mime.toLowerCase().startsWith("audio/")){
+                throw new Exception("Illegal download format: "+mime);
+            }
             if (completedDownloads.get() != 1) {
                 throw new Exception("Download seems to have failed");
             }
@@ -93,7 +100,7 @@ public class RawAudioTask extends BaseTask {
             cancelled();
             cleanup(true);
         } catch (Exception ex) {
-            Log.d(App.TAG, ex.toString());
+            Log.e(App.TAG, ex.toString());
             failed();
             cleanup(true);
         } finally {

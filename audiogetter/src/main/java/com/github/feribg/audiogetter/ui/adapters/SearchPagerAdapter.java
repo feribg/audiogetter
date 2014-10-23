@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import com.github.feribg.audiogetter.ui.fragments.Mp3skullSearchResultsFragment;
 import com.github.feribg.audiogetter.ui.fragments.SoundcloudSearchResultsFragment;
 import com.github.feribg.audiogetter.ui.fragments.VimeoSearchResultsFragment;
 import com.github.feribg.audiogetter.ui.fragments.YoutubeSearchResultsFragment;
@@ -16,6 +17,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
     public static final int PAGE_SOUNDCLOUD = 0;
     public static final int PAGE_YOUTUBE = 1;
     public static final int PAGE_VIMEO = 2;
+    public static final int PAGE_MP3SKULL = 3;
 
     public static final String ARG_SEARCH_TERM = "search_term";
     private String searchTerm;
@@ -40,6 +42,9 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
                 case PAGE_VIMEO:
                     fragment = new VimeoSearchResultsFragment();
                     break;
+                case PAGE_MP3SKULL:
+                    fragment = new Mp3skullSearchResultsFragment();
+                    break;
                 default:
                     throw new Exception("Invalid page choice");
             }
@@ -63,7 +68,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -78,6 +83,9 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
                 break;
             case PAGE_VIMEO:
                 title = "Vimeo";
+                break;
+            case PAGE_MP3SKULL:
+                title = "Mp3Skull";
                 break;
             default:
                 title = "Unknown";

@@ -279,8 +279,8 @@ public class Utils {
      */
     public static URI getMp3SkullSearchURI(String query, String csrf) throws URISyntaxException{
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-        qparams.add(new BasicNameValuePair("fckh", csrf));
         qparams.add(new BasicNameValuePair("q", query));
+        qparams.add(new BasicNameValuePair("fckh", csrf));
         return URIUtils.createURI(Constants.Mp3skull.API_SCHEME, Constants.Mp3skull.API_HOST, -1, Constants.Mp3skull.API_SEARCH, URLEncodedUtils.format(qparams, "UTF-8"), null);
     }
 
@@ -290,7 +290,7 @@ public class Utils {
      * @throws URISyntaxException
      */
     public static URI getMp3SkullBaseURI() throws URISyntaxException{
-        return URIUtils.createURI(Constants.Mp3skull.API_SCHEME, Constants.Mp3skull.API_HOST, -1, Constants.Mp3skull.API_SEARCH, null, null);
+        return URIUtils.createURI(Constants.Mp3skull.API_SCHEME, Constants.Mp3skull.API_HOST, -1, null, null, null);
     }
 
     /**

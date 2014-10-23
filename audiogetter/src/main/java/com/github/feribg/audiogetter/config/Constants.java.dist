@@ -59,8 +59,8 @@ public final class Constants {
      * Mp3Skull specific settings
      */
     public static final class Mp3skull{
-        public static final String API_HOST = "http://mp3skull.com/";
-        public static final String API_SCHEME = "https";
+        public static final String API_HOST = "mp3skull.com";
+        public static final String API_SCHEME = "http";
         public static final String API_SEARCH = "search_db.php";
     }
 }

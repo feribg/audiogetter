@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.github.feribg.audiogetter.R;
 import com.github.feribg.audiogetter.config.App;
 import com.github.feribg.audiogetter.helpers.Utils;
+import com.github.feribg.audiogetter.models.SearchItem;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -18,6 +19,7 @@ import com.koushikdutta.ion.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.net.URI;
 
@@ -80,7 +82,7 @@ public class Mp3skullSearchResultsFragment extends SearchResultsBaseFragment{
                     .withResponse()
                     .setCallback(new FutureCallback<Response<String>>() {
                         @Override
-                        public void onCompleted(Exception e, Response<String> result) {
+                        public void onCompleted(Exception e, final Response<String> result) {
                             try{
                                 if(e != null){
                                     throw e;
@@ -100,7 +102,17 @@ public class Mp3skullSearchResultsFragment extends SearchResultsBaseFragment{
                                             @Override
                                             public void onCompleted(Exception e, Response<String> response) {
                                                 try {
-                                                    //TODO: implement parsing of the serch results and populate the list
+                                                    if(e != null){
+                                                        throw e;
+                                                    }
+                                                    Document results = Jsoup.parse(response.getResult());
+                                                    Elements songs = results.getElementsByAttributeValueMatching("id", "song_html");
+                                                    for(Element song : songs){
+                                                        SearchItem item = sourceController.extractMp3skullSearchItem(song);
+                                                        if (item != null) {
+                                                            searchResultsAdapter.add(item);
+                                                        }
+                                                    }
                                                     loaded = true;
                                                 } catch (Exception ex) {
                                                     Toast.makeText(getActivity(), R.string.error_loading_results, Toast.LENGTH_LONG).show();
@@ -112,7 +124,6 @@ public class Mp3skullSearchResultsFragment extends SearchResultsBaseFragment{
                             }catch (Exception ex){
                                 Toast.makeText(getActivity(), R.string.error_loading_results, Toast.LENGTH_LONG).show();
                                 Log.e(App.TAG, "Error while trying to get search results", ex);
-                                Log.e(App.TAG, "Response: "+ result.toString());
                             }
 
                         }
