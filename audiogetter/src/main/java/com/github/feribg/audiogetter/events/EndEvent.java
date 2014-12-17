@@ -1,25 +1,27 @@
 package com.github.feribg.audiogetter.events;
 
+import com.github.feribg.audiogetter.models.Download;
+
 /**
  * Event representing the completion of a task as a success, failure or cancellation
  */
 public class EndEvent {
-    Integer taskId;
+    Download download;
     Boolean success;
     Boolean cancelled;
 
-    public EndEvent(Integer taskId, Boolean success, Boolean cancelled) {
-        this.taskId = taskId;
+    public EndEvent(Download download, Boolean success, Boolean cancelled) {
+        this.download = download;
         this.success = success;
         this.cancelled = cancelled;
     }
 
-    public Integer getTaskId() {
-        return taskId;
+    public Download getDownload() {
+        return download;
     }
 
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
+    public void setDownload(Download download) {
+        this.download = download;
     }
 
     public Boolean getSuccess() {
@@ -41,7 +43,7 @@ public class EndEvent {
     @Override
     public String toString() {
         return "EndEvent{" +
-                "taskId=" + taskId +
+                "download=" + download +
                 ", success=" + success +
                 ", cancelled=" + cancelled +
                 '}';

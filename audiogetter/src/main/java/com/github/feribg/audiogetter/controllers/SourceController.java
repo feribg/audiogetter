@@ -1,7 +1,6 @@
 package com.github.feribg.audiogetter.controllers;
 
 import android.os.Environment;
-import android.text.Html;
 import android.util.Log;
 import android.webkit.URLUtil;
 
@@ -19,7 +18,6 @@ import org.jsoup.nodes.Element;
 import java.io.File;
 
 import javax.inject.Singleton;
-import javax.xml.transform.Source;
 
 @Singleton
 public class SourceController {
@@ -28,6 +26,15 @@ public class SourceController {
     public static final String EXTRACTOR_SOUNDCLOUD = "soundcloud";
     public static final String EXTRACTOR_YOUTUBE = "youtube";
     public static final String EXTRACTOR_VIMEO = "vimeo";
+
+    private File outputFolder;
+
+    public SourceController() throws Exception{
+        outputFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/samples");
+        if(!(outputFolder.isDirectory() && outputFolder.canWrite())){
+            throw new Exception("The output folder: "+outputFolder.getAbsolutePath()+" is not writable");
+        }
+    }
 
     /**
      * Determine the service provider given a URL.
@@ -47,8 +54,6 @@ public class SourceController {
             return Services.SOUNDCLOUD;
         } else if (serviceName.equals(SourceController.EXTRACTOR_VIMEO)) {
             return Services.VIMEO;
-        } else if (serviceName.equals(SourceController.EXTRACTOR_RAW)) {
-            return Services.RAW;
         } else {
             throw new InvalidSourceException(String.format("This service is not supported. Service name: %s", serviceName));
         }
@@ -83,15 +88,13 @@ public class SourceController {
         download.setTitle(downloadTitle);
         download.setFilename(filename);
         download.setDownloadUrl(downloadUrl);
-        download.setType(ext); //only support youtube MP4s
-        download.setExt(ext); //only support youtube MP4s
+        download.setType(ext);
+        download.setExt(ext);
         download.setService(determineService(extractor));
         download.setSourceId(sourceId);
         download.setDuration(videoObject.get("duration").getAsLong());
-        download.setFolder(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/samples"));
-        download.setDst(new File(download.getFolder(), download.getTitle() + "." + download.getExt()));
-        download.setTmpDst(new File(download.getFolder(), download.getTitle() + "-temp." + download.getExt()));
-        download.setTmpDst2(new File(download.getFolder(), download.getTitle() + "-temp-aac." + download.getExt()));
+        download.setDst(new File(outputFolder, download.getTitle() + "." + download.getExt()));
+        download.setTmpDst(new File(outputFolder, download.getTitle() + "-temp." + download.getExt()));
         download.setExtractor(extractor);
         Log.d(App.TAG, "Download object: " + download.toString());
         return download;
@@ -115,8 +118,7 @@ public class SourceController {
         }
         download.setDownloadUrl(searchItem.getSongLocation());
         download.setUrl(searchItem.getUrl());
-        download.setFolder(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Music/samples"));
-        download.setDst(new File(download.getFolder(), download.getTitle() + "." + download.getExt()));
+        download.setDst(new File(outputFolder, download.getTitle() + "." + download.getExt()));
         download.setExtractor(searchItem.getExtractor());
         download.setService(determineService(searchItem.getExtractor()));
         String filename = Utils.cleanFilename(download.getTitle());

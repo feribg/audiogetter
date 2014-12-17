@@ -97,7 +97,7 @@ public class Utils {
     public static void copyFile(File src, File dst, Boolean overwrite) throws IOException {
         FileChannel inChannel = new FileInputStream(src).getChannel();
         FileChannel outChannel = new FileOutputStream(dst).getChannel();
-        if (!dst.exists() || (dst.exists() && overwrite == true)) {
+        if (!dst.exists() || (dst.exists() && overwrite)) {
             try {
                 if (dst.exists()) {
                     Log.d(App.TAG, "copyFile: destination exists but overwriting");

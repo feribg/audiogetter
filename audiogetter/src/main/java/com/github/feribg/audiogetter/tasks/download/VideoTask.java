@@ -1,4 +1,4 @@
-package com.github.feribg.audiogetter.tasks;
+package com.github.feribg.audiogetter.tasks.download;
 
 import android.util.Log;
 
@@ -44,25 +44,21 @@ public abstract class VideoTask extends BaseTask {
     @Inject
     protected VideoController videoController;
 
-    protected VideoTask(Integer taskID, Download download, int iconRes) {
-        super(taskID, download, iconRes);
+    protected VideoTask(Integer taskID, Download download) {
+        super(taskID, download);
     }
 
     @Override
     public void run() {
         try {
-            EventBus.getDefault().post(new StartEvent(taskID));
-
+            EventBus.getDefault().post(new StartEvent(download));
             //only run if thread hasn't been interrupted
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
             Long startTime = System.currentTimeMillis();
-
             //set reference to the thread that's running the task so it can be interrupted
             setCurrentThread(Thread.currentThread());
-            mBuilder.setContentText("Download in progress");
-            notificationManager.notify(taskID, mBuilder.build());
             Chunks chunksData = videoController.getChunks(download.getDownloadUrl());
 
             //download the individual audio chunks
@@ -99,12 +95,6 @@ public abstract class VideoTask extends BaseTask {
         }
         if (download.getTmpDst() != null) {
             FileUtils.deleteQuietly(download.getTmpDst());
-        }
-        if (download.getTmpFolder() != null) {
-            FileUtils.deleteQuietly(download.getTmpFolder());
-        }
-        if (download.getTmpDst2() != null) {
-            FileUtils.deleteQuietly(download.getTmpDst2());
         }
     }
 

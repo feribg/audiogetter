@@ -1,10 +1,13 @@
 package com.github.feribg.audiogetter.services;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,14 +15,18 @@ import com.github.feribg.audiogetter.R;
 import com.github.feribg.audiogetter.config.App;
 import com.github.feribg.audiogetter.events.AddEvent;
 import com.github.feribg.audiogetter.events.EndEvent;
+import com.github.feribg.audiogetter.events.FinalizeEvent;
 import com.github.feribg.audiogetter.events.ProgressEvent;
 import com.github.feribg.audiogetter.events.StartEvent;
 import com.github.feribg.audiogetter.models.Download;
-import com.github.feribg.audiogetter.tasks.BaseTask;
-import com.github.feribg.audiogetter.tasks.RawAudioTask;
-import com.github.feribg.audiogetter.tasks.SoundcloudTask;
-import com.github.feribg.audiogetter.tasks.VimeoTask;
-import com.github.feribg.audiogetter.tasks.YoutubeTask;
+import com.github.feribg.audiogetter.tasks.download.BaseTask;
+import com.github.feribg.audiogetter.tasks.download.Mp3skullTask;
+import com.github.feribg.audiogetter.tasks.download.RawAudioTask;
+import com.github.feribg.audiogetter.tasks.download.SoundcloudTask;
+import com.github.feribg.audiogetter.tasks.download.VimeoTask;
+import com.github.feribg.audiogetter.tasks.download.YoutubeTask;
+import com.github.feribg.audiogetter.ui.notifications.NotificationBuilder;
+import com.google.inject.Inject;
 import com.koushikdutta.ion.Ion;
 
 import java.util.Map;
@@ -47,7 +54,7 @@ public class ManagerService extends Service {
     // Sets the initial threadpool size
     private static final int CORE_POOL_SIZE = 1;
     // Sets the maximum threadpool size to 10
-    private static final int MAXIMUM_POOL_SIZE = 10;
+    private static final int MAXIMUM_POOL_SIZE = 3;
     //threadpool keep alive timeout in secs
     private static final int KEEP_ALIVE_TIME = 1;
     //generate IDs to assign to new tasks
@@ -62,6 +69,8 @@ public class ManagerService extends Service {
     //holds a list of current tasks submitted to the thread pool
     private Map<Integer, BaseTask> tasksMap = new ConcurrentHashMap<Integer, BaseTask>();
 
+    @Inject
+    NotificationBuilder notificationBuilder;
 
     public ManagerService() {
         mTaskQueue = new LinkedBlockingQueue<Runnable>();
@@ -99,6 +108,7 @@ public class ManagerService extends Service {
     public void startTask(Download download) {
         BaseTask task = null;
         Integer taskId = idGenerator.incrementAndGet();
+        download.setTaskId(taskId);
         try {
             switch (download.getService()) {
                 case YOUTUBE:
@@ -110,14 +120,14 @@ public class ManagerService extends Service {
                 case VIMEO:
                     task = new VimeoTask(taskId, download, R.drawable.notification_vimeo);
                     break;
-                case RAW:
-                    task = new RawAudioTask(taskId, download, R.drawable.notification_music);
+                case MP3SKULL:
+                    task = new Mp3skullTask(taskId, download);
                     break;
             }
             if (task != null) {
                 mWorkerThreadPool.execute(task);
                 tasksMap.put(taskId, task);
-                EventBus.getDefault().post(new AddEvent(taskId, true));
+                EventBus.getDefault().post(new AddEvent(download, true));
                 Log.d(App.TAG, "Added youtube task to the queue");
             } else {
                 Toast.makeText(App.ctx, "Unsupported source URL", Toast.LENGTH_LONG).show();
@@ -165,8 +175,10 @@ public class ManagerService extends Service {
      *
      * @param progressEvent
      */
-    public void onEvent(ProgressEvent progressEvent) {
+    public void onEvent(ProgressEvent progressEvent)
+    {
         Log.d(App.TAG, progressEvent.toString());
+        notificationBuilder.downloadNotificationProgress(progressEvent.getDownload(), progressEvent.getCompleted(), progressEvent.getTotal());
     }
 
     /**
@@ -176,6 +188,8 @@ public class ManagerService extends Service {
      */
     public void onEvent(StartEvent startEvent) {
         Log.d(App.TAG, startEvent.toString());
+        //show the pending notification for this download
+        notificationBuilder.downloadNotificationStarted(startEvent.getDownload());
     }
 
     /**
@@ -185,6 +199,7 @@ public class ManagerService extends Service {
      */
     public void onEvent(AddEvent addEvent) {
         Log.d(App.TAG, addEvent.toString());
+        notificationBuilder.downloadNotificationPending(addEvent.getDownload());
     }
 
     /**
@@ -194,6 +209,28 @@ public class ManagerService extends Service {
      */
     public void onEvent(EndEvent endEvent) {
         Log.d(App.TAG, endEvent.toString());
+        //success
+        if(endEvent.getSuccess()){
+            notificationBuilder.downloadNotificationCompleteSuccess(endEvent.getDownload());
+        }else{
+            //failed and cancelled
+            if(endEvent.getCancelled()){
+                notificationBuilder.downloadNotificationCancelled(endEvent.getDownload());
+            }else{
+               //failed for some other reason
+                notificationBuilder.downloadNotificationFailed(endEvent.getDownload());
+            }
+        }
+    }
+
+    /**
+     * Trigger when finalizing the audio from a video extraction
+     *
+     * @param finalizeEvent
+     */
+    public void onEvent(FinalizeEvent finalizeEvent){
+        Log.d(App.TAG, finalizeEvent.toString());
+        notificationBuilder.downloadNotificationFinalize(finalizeEvent.getDownload());
     }
 
     public Map<Integer, BaseTask> getTasksMap() {

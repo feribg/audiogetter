@@ -9,7 +9,7 @@ import android.util.Log;
 import com.github.feribg.audiogetter.config.App;
 import com.github.feribg.audiogetter.models.Download;
 import com.github.feribg.audiogetter.services.ManagerService;
-import com.github.feribg.audiogetter.tasks.BaseTask;
+import com.github.feribg.audiogetter.tasks.download.BaseTask;
 
 
 public class ManagerServiceReceiver extends BroadcastReceiver {

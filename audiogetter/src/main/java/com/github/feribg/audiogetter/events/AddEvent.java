@@ -1,23 +1,23 @@
 package com.github.feribg.audiogetter.events;
 
+import com.github.feribg.audiogetter.models.Download;
+
 /**
  * Event representing the addition of a task to the executor queue and if it succeeded or failed
  */
 public class AddEvent {
-    Integer taskId;
+    /**
+     * The download object for that task
+     */
+    Download download;
+    /**
+     * If it was added succesfully or there was an error submitting to the executor
+     */
     Boolean success;
 
-    public AddEvent(Integer taskId, Boolean success) {
-        this.taskId = taskId;
+    public AddEvent(Download dl, Boolean success) {
         this.success = success;
-    }
-
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
+        this.download = dl;
     }
 
     public Boolean getSuccess() {
@@ -31,8 +31,17 @@ public class AddEvent {
     @Override
     public String toString() {
         return "AddEvent{" +
-                "taskId=" + taskId +
+                ", download=" + download +
                 ", success=" + success +
                 '}';
     }
+
+    public Download getDownload() {
+        return download;
+    }
+
+    public void setDownload(Download download) {
+        this.download = download;
+    }
+
 }

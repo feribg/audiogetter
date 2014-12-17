@@ -1,4 +1,4 @@
-package com.github.feribg.audiogetter.tasks;
+package com.github.feribg.audiogetter.tasks.download;
 
 
 import android.util.Log;
@@ -17,7 +17,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import de.greenrobot.event.EventBus;
@@ -26,8 +25,8 @@ import roboguice.inject.RoboInjector;
 
 public class RawAudioTask extends BaseTask {
 
-    public RawAudioTask(Integer id, Download download, int imageRes) {
-        super(id, download, imageRes);
+    public RawAudioTask(Integer id, Download download) {
+        super(id, download);
         final RoboInjector injector = RoboGuice.getInjector(App.ctx);
         injector.injectMembersWithoutViews(this);
 

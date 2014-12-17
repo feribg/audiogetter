@@ -8,30 +8,95 @@ import java.io.Serializable;
  */
 public class Download implements Serializable {
 
+    /**
+     * Supported file types for mp3 extraction
+     */
     public static final String TYPE_MP4 = "mp4";
+    public static final String TYPE_MP3 = "mp3";
 
-    private String ext; //filename extension (to determine format)
-    private String title;  //original title of the source
-    private String filename; //a filesystem friendly title
+    /**
+     * File ext of the download file
+     */
+    private String ext;
+    /**
+     * Title of the original source
+     */
+    private String title;
+    /**
+     * Filename of the download file. Must be filesys friendly
+     */
+    private String filename;
+    /**
+     * Destination for the download
+     */
     private File dst;
+    /**
+     * Used to store the chunks for mp4 audio extraction and other TMP data
+     */
     private File tmpDst;
-    private File tmpDst2;
-    private File folder;
-    private File tmpFolder;
+    /**
+     * Duration of the media in seconds
+     */
     private Long duration;
-    private String type; // file type
+    /**
+     * File type, as defined in the cost
+     */
+    private String type;
+    /**
+     * Download service
+     */
     private Services service;
-    private String url; //complete url to the original source
-    private String downloadUrl; //the url to the raw download media
+    /**
+     * Complete link to source URL. Usually video page on youtube or details page of a download
+     */
+    private String url;
+    /**
+     * The raw url to the media file
+     */
+    private String downloadUrl;
+    /**
+     * If the service supports IDs, for example youtube video ID
+     */
     private String sourceId;
+    /**
+     * The extactor matched for that file type, when using the API to get music data
+     */
     private String extractor;
+    /**
+     * Not supported yet, allow the display of thumbs for music entries
+     */
     private String thumbnailUrl;
-    private Long orignalSize; //original file size of the source
+    /**
+     * File size in bytes of the original media
+     */
+    private Long orignalSize;
+    /**
+     * If this is a valid mp4 container include the moov Atom fize
+     */
     private Long moovAtomSize; //if source is vide get the moov atom size
-    private Long downloadSize; //the new download size after calculations (applicable to mp4s that are demuxed on the fly)
+    /**
+     * Download size. For mp3's it is the same as originalSize, for mp4 it is the demuxed audio only data that was downloaded. (sum of all chunk sizes + request overhead)
+     */
+    private Long downloadSize;
+    /**
+     * The download taskId reference that is used to execute this download
+     */
+    private Integer taskId;
+    /**
+     * Used to show an icon for the task where applicable
+     */
+    protected Integer iconRes;
 
 
     public Download() {
+    }
+
+    public Integer getIconRes() {
+        return iconRes;
+    }
+
+    public void setIconRes(Integer iconRes) {
+        this.iconRes = iconRes;
     }
 
     public Long getDuration() {
@@ -40,30 +105,6 @@ public class Download implements Serializable {
 
     public void setDuration(Long duration) {
         this.duration = duration;
-    }
-
-    public File getTmpFolder() {
-        return tmpFolder;
-    }
-
-    public void setTmpFolder(File tmpFolder) {
-        this.tmpFolder = tmpFolder;
-    }
-
-    public File getFolder() {
-        return folder;
-    }
-
-    public void setFolder(File folder) {
-        this.folder = folder;
-    }
-
-    public File getTmpDst2() {
-        return tmpDst2;
-    }
-
-    public void setTmpDst2(File tmpDst2) {
-        this.tmpDst2 = tmpDst2;
     }
 
     public File getDst() {
@@ -188,6 +229,14 @@ public class Download implements Serializable {
         this.downloadSize = downloadSize;
     }
 
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
+
     @Override
     public String toString() {
         return "Download{" +
@@ -196,7 +245,7 @@ public class Download implements Serializable {
                 ", filename='" + filename + '\'' +
                 ", dst=" + dst +
                 ", tmpDst=" + tmpDst +
-                ", tmpDst2=" + tmpDst2 +
+                ", duration=" + duration +
                 ", type='" + type + '\'' +
                 ", service=" + service +
                 ", url='" + url + '\'' +
@@ -207,6 +256,8 @@ public class Download implements Serializable {
                 ", orignalSize=" + orignalSize +
                 ", moovAtomSize=" + moovAtomSize +
                 ", downloadSize=" + downloadSize +
+                ", taskId=" + taskId +
+                ", iconRes=" + iconRes +
                 '}';
     }
 }
